@@ -1,0 +1,64 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-blue: #2563EB;
+  --primary-blue-dark: #1E40AF;
+  --primary-blue-light: #60A5FA;
+  --neutral-bg: #F8FAFC;
+  --neutral-beige: #EFEDE8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Base styles with modern reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Mobile-optimized MUI component spacing */
+@media (max-width: 600px) {
+  .MuiToolbar-root {
+    min-height: 64px !important;
+  }
+  
+  .MuiDrawer-paper {
+    max-width: 85vw !important;
+  }
+  
+  .MuiContainer-root {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
