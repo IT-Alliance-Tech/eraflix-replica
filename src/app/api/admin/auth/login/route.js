@@ -31,43 +31,50 @@ export async function POST(request) {
       )
     }
 
+    // TODO: Account lock logic temporarily disabled
     // Check account lock
-    if (user.accountLockedUntil && user.accountLockedUntil > new Date()) {
-      const lockTimeLeft = Math.ceil((user.accountLockedUntil - new Date()) / (1000 * 60))
-      return NextResponse.json(
-        { error: `Account locked for ${lockTimeLeft} more minutes. Contact Super Admin.` },
-        { status: 423 }
-      )
-    }
+    // if (user.accountLockedUntil && user.accountLockedUntil > new Date()) {
+    //   const lockTimeLeft = Math.ceil((user.accountLockedUntil - new Date()) / (1000 * 60))
+    //   return NextResponse.json(
+    //     { error: `Account locked for ${lockTimeLeft} more minutes. Contact Super Admin.` },
+    //     { status: 423 }
+    //   )
+    // }
 
     // Verify password using the model's instance method
     const isValidPassword = await user.comparePassword(password)
     
     if (!isValidPassword) {
-      const newFailedAttempts = (user.failedLoginAttempts || 0) + 1
-      const shouldLock = newFailedAttempts >= 5
-      
-      // Update using Mongoose
-      await User.updateOne(
-        { _id: user._id },
-        { 
-          failedLoginAttempts: newFailedAttempts,
-          accountLockedUntil: shouldLock 
-            ? new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
-            : null,
-          updatedAt: new Date()
-        }
-      )
-      
-      if (shouldLock) {
-        return NextResponse.json(
-          { error: 'Too many failed attempts. Account locked for 30 minutes.' },
-          { status: 423 }
-        )
-      }
+      // TODO: Failed login attempt tracking temporarily disabled
+      // const newFailedAttempts = (user.failedLoginAttempts || 0) + 1
+      // const shouldLock = newFailedAttempts >= 5
+      // 
+      // // Update using Mongoose
+      // await User.updateOne(
+      //   { _id: user._id },
+      //   { 
+      //     failedLoginAttempts: newFailedAttempts,
+      //     accountLockedUntil: shouldLock 
+      //       ? new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
+      //       : null,
+      //     updatedAt: new Date()
+      //   }
+      // )
+      // 
+      // if (shouldLock) {
+      //   return NextResponse.json(
+      //     { error: 'Too many failed attempts. Account locked for 30 minutes.' },
+      //     { status: 423 }
+      //   )
+      // }
+      // 
+      // return NextResponse.json(
+      //   { error: `Invalid credentials. ${5 - newFailedAttempts} attempts remaining.` },
+      //   { status: 401 }
+      // )
       
       return NextResponse.json(
-        { error: `Invalid credentials. ${5 - newFailedAttempts} attempts remaining.` },
+        { error: 'Invalid credentials' },
         { status: 401 }
       )
     }

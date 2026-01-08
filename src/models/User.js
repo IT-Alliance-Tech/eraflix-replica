@@ -81,10 +81,11 @@ userSchema.index({ role: 1 })
 userSchema.index({ isActive: 1 })
 userSchema.index({ createdBy: 1 })
 
+// TODO: Account lock virtual temporarily disabled
 // Virtual for account lock status
-userSchema.virtual('isLocked').get(function() {
-  return !!(this.accountLockedUntil && this.accountLockedUntil > Date.now())
-})
+// userSchema.virtual('isLocked').get(function() {
+//   return !!(this.accountLockedUntil && this.accountLockedUntil > Date.now())
+// })
 
 // Pre-save middleware to hash password
 userSchema.pre('save', async function(next) {
@@ -136,10 +137,11 @@ userSchema.statics.findByCredentials = async function(username, password) {
     throw new Error('Invalid credentials')
   }
   
+  // TODO: Account lock check temporarily disabled
   // Check if account is locked
-  if (user.isLocked) {
-    throw new Error('Account is temporarily locked')
-  }
+  // if (user.isLocked) {
+  //   throw new Error('Account is temporarily locked')
+  // }
   
   const isMatch = await user.comparePassword(password)
   if (!isMatch) {
@@ -149,22 +151,23 @@ userSchema.statics.findByCredentials = async function(username, password) {
   return user
 }
 
+// TODO: incrementFailedAttempts method temporarily disabled
 // Static method to increment failed login attempts
-userSchema.statics.incrementFailedAttempts = async function(userId) {
-  const user = await this.findById(userId)
-  if (!user) return
-  
-  const updates = { $inc: { failedLoginAttempts: 1 } }
-  
-  // Lock account if too many failed attempts
-  if (user.failedLoginAttempts >= 4) {
-    updates.$set = {
-      accountLockedUntil: new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
-    }
-  }
-  
-  return this.updateOne({ _id: userId }, updates)
-}
+// userSchema.statics.incrementFailedAttempts = async function(userId) {
+//   const user = await this.findById(userId)
+//   if (!user) return
+//   
+//   const updates = { $inc: { failedLoginAttempts: 1 } }
+//   
+//   // Lock account if too many failed attempts
+//   if (user.failedLoginAttempts >= 4) {
+//     updates.$set = {
+//       accountLockedUntil: new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
+//     }
+//   }
+//   
+//   return this.updateOne({ _id: userId }, updates)
+// }
 
 // Static method to reset failed attempts
 userSchema.statics.resetFailedAttempts = async function(userId) {
